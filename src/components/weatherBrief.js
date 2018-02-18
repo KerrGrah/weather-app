@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import starEmpty from "../assets/star-empty";
 import starFilled from "../assets/star-filled";
 
-export default class WeatherBrief extends Component {
+export default class WeatherBrief extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { loaded: false };
@@ -45,20 +45,24 @@ export default class WeatherBrief extends Component {
     } = this.props.weather;
 
     return (
-      <Link to={"/single/" + country + "/" + name}>
+      <Link to={`/single/${country}/${name}`}>
         <Wrapper style={this.state.loaded ? {} : { display: "none" }}>
           <h3>{name}</h3>
           <p>{temp} °C</p>
           <div className="img-container">
             <img
               onLoad={this.handleImageLoaded}
-              src={"http://openweathermap.org/img/w/" + icon + ".png"}
+              src={`http://openweathermap.org/img/w/${icon}.png`}
             />
           </div>
           {this.props.savedIds.indexOf(id) < 0 ? (
-            <div onClick={this.handleSave.bind(name)}> {starEmpty()}</div>
+            <Star onClick={this.handleSave.bind(name)}>
+              {starEmpty("save-empty")}
+            </Star>
           ) : (
-            <div onClick={this.handleDelete.bind(name)}> {starFilled()}</div>
+            <Star onClick={this.handleDelete.bind(name)}>
+              {starFilled("save-filled")}
+            </Star>
           )}
         </Wrapper>
       </Link>
@@ -80,6 +84,7 @@ const Wrapper = styled.div`
   & p {
     flex: 1;
   }
-  & .img-container {
-  }
+`;
+const Star = styled.div`
+  padding: 10px;
 `;
