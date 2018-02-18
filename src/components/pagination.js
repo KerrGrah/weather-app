@@ -1,28 +1,47 @@
 import React, { Component } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import Button from "./button";
 
 export default class Pagination extends Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.page !== nextProps.page;
+  }
   render() {
+    const Container = styled.div`
+      text-align: center;
+      animation: ${fadeIn} 1s linear;
+      font-size: 1.2rem;
+    `;
+
     return (
-      <Container className="pagination">
-        <button
+      <Container>
+        <Button
+          type="button"
+          value="prev"
           disabled={this.props.firstPage}
           onClick={this.props.changePage.bind(this, -1)}
           className="pagination_prev-button"
-        >
-          prev
-        </button>
-        <button
+        />
+        <Button
+          type="button"
+          value="next"
           disabled={this.props.lastPage}
           onClick={this.props.changePage.bind(this, 1)}
           className="pagination_next-button"
-        >
-          next
-        </button>
+        />
       </Container>
     );
   }
 }
-const Container = styled.div`
-  text-align: center;
-`;
+
+const fadeIn = keyframes`
+0% {
+  opacity: 0;
+}
+80% {
+  opacity: 0;
+}
+100% {
+  opacity: 1;
+}
+ `;
