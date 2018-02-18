@@ -5,11 +5,9 @@ import Spinner from "../components/spinner";
 import DisplayButtons from "../components/displayButtons";
 import SortSelect from "../components/sortSelect";
 import {
-  getWeatherOne,
   changePage,
   handleSave,
   handleDelete,
-  USER_INPUT_CHANGE,
   USER_INPUT_EMPTY,
   GET_SAVED_WEATHER,
   GET_USER_LOCATION,
@@ -32,15 +30,9 @@ class Home extends Component {
   componentWillMount() {
     this.props.dispatch({ type: GET_USER_LOCATION });
     this.props.dispatch({ type: GET_SAVED_WEATHER });
+    this.props.dispatch({ type: USER_INPUT_EMPTY });
   }
 
-  handleInputChange = e => {
-    if (e.target.value) {
-      this.props.dispatch({ type: USER_INPUT_CHANGE, input: e.target.value });
-    } else {
-      this.props.dispatch({ type: USER_INPUT_EMPTY });
-    }
-  };
   handlePageChange = change => {
     if (
       !this.state.displaySaved &&
@@ -83,29 +75,23 @@ class Home extends Component {
     return (
       <Container>
         <Header />
-        <ComboBox
-          getWeatherOne={city => this.props.dispatch(getWeatherOne(city))}
-          handleInputChange={this.handleInputChange}
-          matchingCities={this.props.user.matchingCities}
-          value={this.props.user.userInput}
-        />
+        <ComboBox history={this.props.history} />
         <DisplayButtons
           showSaved={() => this.setState({ displaySaved: true })}
           showRandom={() => this.setState({ displaySaved: false })}
           pageChange={() => this.props.dispatch(changePage(-9999))}
+          displaySaved={this.state.displaySaved}
         />
-        {this.state.displaySaved && (
-          <SortSelect
-            sortByAlphabet={() =>
-              this.props.dispatch({ type: SORT_BY_ALPHABET })
-            }
-            sortByTemperature={() =>
-              this.props.dispatch({ type: SORT_BY_TEMPERATURE })
-            }
-          />
-        )}
+        <SortSelect
+          display={this.state.displaySaved}
+          sortByAlphabet={() => this.props.dispatch({ type: SORT_BY_ALPHABET })}
+          sortByTemperature={() =>
+            this.props.dispatch({ type: SORT_BY_TEMPERATURE })
+          }
+        />
         <BriefsContainer>{weatherBriefs}</BriefsContainer>
         <Pagination
+          page={page}
           firstPage={page === 0}
           lastPage={
             (this.state.displaySaved && (page + 1) * 5 >= weatherData.length) ||
@@ -118,6 +104,7 @@ class Home extends Component {
   }
 }
 const Container = styled.div``;
+const TopControls = styled.div``;
 const BriefsContainer = styled.div``;
 
 const mapStateToProps = store => {

@@ -10,17 +10,38 @@ class Single extends Component {
     const { country, city } = this.props.match.params;
     this.props.dispatch(getWeatherOne(country, city));
   }
-  shouldComponentUpdate(nextProps) {
-    return !!nextProps.weather.id;
-  }
+  // shouldComponentUpdate(nextProps) {
+  //    return !!nextProps.weather.id;
+  // }
+  parseTimestamp = timestamp => {
+    const time = new Date(timestamp * 1000);
+    console.log(typeof time.getHours(), "\n\n\n\n\n\n");
+
+    const hours = String(time.getHours()).padStart(2, "0");
+    const minutes = String(time.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
 
   render() {
     console.log(this.props);
 
-    if (!this.props.weather.main) {
-      return "";
+    if (this.props.error) {
+      const { country, city } = this.props.match.params;
+      return (
+        <Container>
+          <Header
+            handleClick={(country, city) =>
+              this.props.dispatch(getWeatherOne(country, city))
+            }
+          />
+          <ErrorMsgg>
+            {`There would appear to be no weather available for ${city} in ${country}.`}
+          </ErrorMsgg>
+        </Container>
+      );
     }
-    if (!this.props.fetched) return <Spinner />;
+
+    if (!this.props.fetched || !this.props.weather.main) return <Spinner />;
 
     const weather = {
       ...this.props.weather.sys,
@@ -28,6 +49,7 @@ class Single extends Component {
       ...this.props.weather.weather[0],
       name: this.props.weather.name
     };
+    console.log(weather);
 
     return (
       <Container>
@@ -36,19 +58,28 @@ class Single extends Component {
             this.props.dispatch(getWeatherOne(country, city))
           }
         />
-        <div> {weather.name}</div>
-        <div> {weather.description}</div>
-        <div> {weather.temp} </div>
+        <CityName> {weather.name} </CityName>
+        <div> {weather.description} </div>
+        <div>temperature: {weather.temp} </div>
+        <div>humidity: {weather.humidity} </div>
+        <div>pressure: {weather.pressure} </div>
+        <div>sunrise at: {this.parseTimestamp(weather.sunrise)} </div>
+        <div>sunset at: {this.parseTimestamp(weather.sunset)} </div>
       </Container>
     );
   }
 }
-const Container = styled.div``;
+const Container = styled.div`
+  text-align: center;
+`;
+const CityName = styled.h2``;
+const ErrorMsgg = styled.p``;
 
 const mapStateToProps = store => {
   return {
-    weather: store.weather.singleWeather,
-    fetched: store.weather.fetched
+    weather: store.weatherOne.singleWeather,
+    error: store.weatherOne.error,
+    fetched: store.weatherOne.fetched
   };
 };
 
