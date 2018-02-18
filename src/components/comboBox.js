@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { userInputChange, USER_INPUT_EMPTY } from "../actions";
 
@@ -52,8 +51,14 @@ class ComboBox extends Component {
     if (listContainer) listContainer.scrollTop = this.state.scrollTop;
   }
 
-  handleSelection = value => {
-    const selected = value || this.props.matchingCities[this.state.inFocus];
+  handleSelection = (country, city) => {
+    const selected =
+      country && city
+        ? [city, country]
+        : this.props.matchingCities[this.state.inFocus]
+          ? this.props.matchingCities[this.state.inFocus]
+          : ["that city", "any country"];
+
     this.setState(
       () => ({
         focus: false,
@@ -95,11 +100,14 @@ class ComboBox extends Component {
       const city = el[0];
 
       return (
-        <Link to={"/single/" + country + "/" + city} key={city + country + i}>
-          <Li index={i} inFocus={this.state.inFocus} key={city + country + i}>
-            {city + " " + country}
-          </Li>
-        </Link>
+        <Li
+          onMouseDown={this.handleSelection.bind(null, country, city)}
+          index={i}
+          inFocus={this.state.inFocus}
+          key={city + country + i}
+        >
+          {city + " " + country}
+        </Li>
       );
     });
 
