@@ -27,6 +27,10 @@ export { handleDelete, DELETE_WEATHER } from "./handleDelete";
 
 export { getWeatherOne, GET_WEATHER_ONE } from "./getWeatherOne";
 export { setWeatherOne, SET_WEATHER_ONE } from "./setWeatherOne";
+export {
+  getWeatherOneFailed,
+  GET_WEATHER_ONE_FAILED
+} from "./getWeatherOneFailed";
 
 export {
   setWeatherFive,
