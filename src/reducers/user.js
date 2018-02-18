@@ -7,6 +7,7 @@ export default function user(
       latitude: null,
       longitude: null
     },
+    userInput: "",
     matchingCities: []
   },
   action

@@ -12,7 +12,8 @@ export default function weather(
     randomWeather: [],
     saved: [],
     savedIds: [],
-    singleWeather: {}
+    singleWeather: {},
+    error: null
   },
   action
 ) {
@@ -35,21 +36,6 @@ export default function weather(
       return {
         ...state,
         savedWeather: sorted
-      };
-    }
-    case actions.GET_WEATHER_ONE: {
-      return {
-        ...state,
-        fetching: true,
-        fetched: false
-      };
-    }
-    case actions.SET_WEATHER_ONE: {
-      return {
-        ...state,
-        singleWeather: action.weather,
-        fetching: false,
-        fetched: true
       };
     }
     case actions.CHANGE_PAGE: {
@@ -114,31 +100,6 @@ export default function weather(
           action.total % 5 === 0
             ? action.total / 5
             : Number((action.total / 5).toFixed()) + 1
-      };
-    }
-    case "FETCH_WEATHER_FULFILLED": {
-      return {
-        ...state
-      };
-    }
-    case "FETCH_WEATHER_REJECTED": {
-      return {
-        ...state
-      };
-    }
-    case "FETCH_CITIES_LIST": {
-      return {
-        ...state
-      };
-    }
-    case "FETCH_CITIES_LIST_FULFILLED": {
-      return {
-        ...state
-      };
-    }
-    case "FETCH_CITIES_LIST_REJECTED": {
-      return {
-        ...state
       };
     }
   }
