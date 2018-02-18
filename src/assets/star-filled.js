@@ -2,7 +2,14 @@ import React from "react";
 
 export default className => {
   return (
-    <svg x="0px" y="0px" viewBox="0 0 47.94 47.94" width="20px" height="20px">
+    <svg
+      className={className}
+      x="0px"
+      y="0px"
+      viewBox="0 0 47.94 47.94"
+      width="20px"
+      height="20px"
+    >
       <path
         style={{ fill: "#91DC5A" }}
         d="M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757
