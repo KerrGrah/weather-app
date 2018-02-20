@@ -15,12 +15,12 @@ export default class WeatherBrief extends PureComponent {
   };
 
   handleSave = e => {
-    e.preventDefault();
+    e.stopPropagation();
     this.props.handleSave(this.props.weather);
   };
 
   handleDelete = e => {
-    e.preventDefault();
+    e.stopPropagation();
     this.props.handleDelete(this.props.weather);
   };
 
