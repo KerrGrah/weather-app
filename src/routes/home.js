@@ -59,12 +59,14 @@ class Home extends Component {
           <WeatherBrief
             key={city + i}
             weather={city}
+            history={this.props.history}
             savedIds={this.props.weather.savedIds}
             handleSave={city => this.props.dispatch(handleSave(city))}
             handleDelete={city => this.props.dispatch(handleDelete(city))}
           />
         );
       });
+
     if (!this.props.weather.fetched)
       return (
         <Container>
@@ -89,23 +91,40 @@ class Home extends Component {
             this.props.dispatch({ type: SORT_BY_TEMPERATURE })
           }
         />
-        <BriefsContainer>{weatherBriefs}</BriefsContainer>
-        <Pagination
-          page={page}
-          firstPage={page === 0}
-          lastPage={
-            (this.state.displaySaved && (page + 1) * 5 >= weatherData.length) ||
-            (!this.state.displaySaved && page === this.props.weather.pages)
-          }
-          changePage={this.handlePageChange}
-        />
+        {!!weatherData.length ? (
+          <BriefsContainer>{weatherBriefs}</BriefsContainer>
+        ) : (
+          <NoSavedMsg>You haven't added any cities yet.</NoSavedMsg>
+        )}
+        {!!weatherData.length && (
+          <Pagination
+            page={page}
+            displaySaved={this.state.displaySaved}
+            firstPage={page === 0}
+            lastPage={
+              (this.state.displaySaved &&
+                (page + 1) * 5 >= weatherData.length) ||
+              (!this.state.displaySaved && page === this.props.weather.pages)
+            }
+            changePage={this.handlePageChange}
+          />
+        )}
       </Container>
     );
   }
 }
-const Container = styled.div``;
+const Container = styled.div`
+  padding-top: 80px;
+`;
 const TopControls = styled.div``;
-const BriefsContainer = styled.div``;
+const BriefsContainer = styled.div`
+  margin: 0 auto;
+  width: 90%;
+  max-width: 800px;
+`;
+const NoSavedMsg = styled.h3`
+  text-align: center;
+`;
 
 const mapStateToProps = store => {
   return {

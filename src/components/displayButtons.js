@@ -23,4 +23,5 @@ export default props => (
 
 const DisplayButtons = styled.div`
   text-align: center;
+  margin-top: 30px;
 `;

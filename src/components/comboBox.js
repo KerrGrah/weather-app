@@ -184,9 +184,9 @@ const Dropdown = styled.div`
 `;
 
 const Li = styled.div`
-  background: ${props => (props.index === props.inFocus ? "#ddd" : "#fff")};
+  background: ${props => (props.index === props.inFocus ? "#eee" : "#fff")};
   padding: 0.5em;
   &:hover {
-    background: #ddd;
+    background: #eee;
   }
 `;

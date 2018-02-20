@@ -4,7 +4,10 @@ import Button from "./button";
 
 export default class Pagination extends Component {
   shouldComponentUpdate(nextProps) {
-    return this.props.page !== nextProps.page;
+    return (
+      this.props.page !== nextProps.page ||
+      this.props.displaySaved !== nextProps.displaySaved
+    );
   }
   render() {
     const Container = styled.div`

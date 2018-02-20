@@ -11,7 +11,8 @@ export default () => (
 );
 
 injectGlobal`
-  body {
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Parisienne');
+ body {
     padding: 0;
     margin: 0;
     font-family: "Noto Sans", sans-serif;

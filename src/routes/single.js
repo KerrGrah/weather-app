@@ -6,6 +6,11 @@ import Header from "../components/header";
 import Spinner from "../components/spinner";
 
 class Single extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { loaded: false };
+  }
+
   componentWillMount() {
     const { country, city } = this.props.match.params;
     this.props.dispatch(getWeatherOne(country, city));
@@ -13,18 +18,18 @@ class Single extends Component {
   // shouldComponentUpdate(nextProps) {
   //    return !!nextProps.weather.id;
   // }
+
+  handleImageLoaded = () => {
+    this.setState({ loaded: true });
+  };
   parseTimestamp = timestamp => {
     const time = new Date(timestamp * 1000);
-    console.log(typeof time.getHours(), "\n\n\n\n\n\n");
-
     const hours = String(time.getHours()).padStart(2, "0");
     const minutes = String(time.getMinutes()).padStart(2, "0");
     return `${hours}:${minutes}`;
   };
 
   render() {
-    console.log(this.props);
-
     if (this.props.error) {
       const { country, city } = this.props.match.params;
       return (
@@ -49,8 +54,6 @@ class Single extends Component {
       ...this.props.weather.weather[0],
       name: this.props.weather.name
     };
-    console.log(weather);
-
     return (
       <Container>
         <Header
@@ -58,19 +61,67 @@ class Single extends Component {
             this.props.dispatch(getWeatherOne(country, city))
           }
         />
-        <CityName> {weather.name} </CityName>
-        <div> {weather.description} </div>
-        <div>temperature: {weather.temp} </div>
-        <div>humidity: {weather.humidity} </div>
-        <div>pressure: {weather.pressure} </div>
-        <div>sunrise at: {this.parseTimestamp(weather.sunrise)} </div>
-        <div>sunset at: {this.parseTimestamp(weather.sunset)} </div>
+        <Section style={this.state.loaded ? {} : { display: "none" }}>
+          <img
+            onLoad={this.handleImageLoaded}
+            src={`http://openweathermap.org/img/w/${weather.icon}.png`}
+          />
+          <CityName> {weather.name} </CityName>
+          <p> {weather.description} </p>
+          <p>
+            temperature: <span> {weather.temp} </span>
+          </p>
+          <p>
+            humidity: <span> {weather.humidity} </span>
+          </p>
+          <p>
+            pressure: <span> {weather.pressure} </span>
+          </p>
+          <p>
+            sunrise at: <span> {this.parseTimestamp(weather.sunrise)} </span>
+          </p>
+          <p>
+            sunset at: <span> {this.parseTimestamp(weather.sunset)} </span>
+          </p>
+        </Section>
       </Container>
     );
   }
 }
+
 const Container = styled.div`
+  padding-top: 80px;
+`;
+
+const Section = styled.section`
+  margin: 0 auto;
+  margin-top: 10vh;
+  padding: 20px;
+  width: 50%;
+  font-family: "Open Sans", sans-serif;
   text-align: center;
+  background: rgba(135, 206, 250, 0.1);
+  box-shadow: 0px 1px 18px #ddd;
+  border-radius: 4px;
+  & > h2 {
+    margin: 0;
+    font-weight: 300;
+  }
+  & > img {
+    width: 20%;
+    display: block;
+    margin: 0 auto;
+  }
+  & > p {
+    margin: 10px;
+    font-weight: 300;
+    &:first-of-type {
+      margin-top: 20px;
+    }
+    & > span {
+      font-weight: 600;
+    }
+  }
 `;
 const CityName = styled.h2``;
 const ErrorMsgg = styled.p``;

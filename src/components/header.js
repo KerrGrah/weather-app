@@ -13,6 +13,21 @@ class Header extends Component {
   componentWillMount() {
     this.props.dispatch({ type: "GET_USER_LOCATION" });
   }
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleScroll);
+  }
+  handleScroll = e => {
+    console.log(window.scrollY);
+    if (window.scrollY > 10) {
+      this.setState(() => ({
+        headerShrink: true
+      }));
+    } else {
+      this.setState(() => ({
+        headerShrink: false
+      }));
+    }
+  };
 
   handleImageLoaded = () => {
     this.setState({ loaded: true });
@@ -25,24 +40,25 @@ class Header extends Component {
   render() {
     const local = this.props.weather;
     return (
-      <WeatherHeader>
+      <WeatherHeader headerShrink={this.state.headerShrink}>
         <Link to="/">
-          <Logo>Weather</Logo>
+          <Logo headerShrink={this.state.headerShrink}>Weather</Logo>
         </Link>
         {local && (
           <Link
             onClick={this.handleClick.bind(this, local.country, local.name)}
             to={"/single/" + local.country + "/" + local.name}
           >
-            <LocalWeather style={this.state.loaded ? {} : { display: "none" }}>
+            <LocalWeather
+              headerShrink={this.state.headerShrink}
+              style={this.state.loaded ? {} : { display: "none" }}
+            >
               <H3>{local.name}</H3>
-              <ImageTempContainer>
-                <Img
-                  onLoad={this.handleImageLoaded}
-                  src={"http://openweathermap.org/img/w/" + local.icon + ".png"}
-                />
-                <P>{local.temp}</P>
-              </ImageTempContainer>
+              <Img
+                onLoad={this.handleImageLoaded}
+                src={"http://openweathermap.org/img/w/" + local.icon + ".png"}
+              />
+              <P>{local.temp}</P>
             </LocalWeather>
           </Link>
         )}
@@ -60,46 +76,60 @@ const mapStateToProps = store => {
 export default connect(mapStateToProps)(Header);
 
 const WeatherHeader = styled.header`
+  position: fixed;
+  z-index: 999;
   top: 0;
   width: 100%;
-  background: rgba(135, 206, 250, 0.4);
-  height: 80px;
+  background: rgba(137, 82, 229, 1);
+  transition: all 500ms ease;
+  height: ${props => (props.headerShrink ? "60px" : "70px")};
+  padding-top: ${props => (props.headerShrink ? "0" : "10px")};
+  padding-bottom: 0;
 `;
 const Logo = styled.h1`
-  @import url("https://fonts.googleapis.com/css?family=Archivo+Narrow|Noto+Sans");
-  font-family: "Archivo Narrow", sans-serif;
+  font-family: "Parisienne", cursive;
   display: inline-block;
   border-radius: 6px;
   float: left;
   height: 40px;
   margin: 0;
+  padding: 8px;
   margin-left: 4vw;
-  margin-top: 10px;
-  background: #fff;
-  color: #022873;
+  transition: all 500ms ease;
+  ${props => (props.headerShrink ? "transform: scale(0.8)" : "")};
+  color: #fff;
   font-size: 40px;
   font-weight: 100;
-  padding: 10px;
 `;
 const LocalWeather = styled.div`
+  position: relative;
+  bottom: 8px;
   display: inline-block;
   float: right;
-  margin-top: 10px;
+  font-family: "Open Sans", sans-serif;
+  color: #fff;
   margin-right: 4vw;
+  transition: all 500ms ease;
+  ${props => (props.headerShrink ? "transform: scale(0.8)" : "")};
 `;
-const ImageTempContainer = styled.div`
-  display: block;
-`;
-const H3 = styled.div`
-  margin: 0;
-  padding: 0;
+
+const H3 = styled.h3`
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 300;
 `;
 const P = styled.p`
   margin: 0;
-  padding: 0 20px;
-  font-size: 2em;
+  padding: 2px 10px;
+  border-radius: 50%;
+  font-size: 1.7em;
+  background: #fff;
+  color: rgba(137, 82, 229, 1);
   display: inline-block;
   position: relative;
-  bottom: 16px;
 `;
-const Img = styled.img``;
+const Img = styled.img`
+  position: relative;
+  top: 18px;
+  margin: 0 14px;
+`;
